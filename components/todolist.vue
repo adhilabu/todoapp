@@ -29,24 +29,31 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
-const prop = defineProps({
-    taskDetails: Object,
-    isValidate: Boolean,
-});
+import {Task} from '@/types'
+
+const prop = defineProps<{
+  taskDetails: Task
+  isValidate: boolean
+}>();
 
 const emit = defineEmits(['addTask', 'updateParentTask']);
 
-const tasks = ref([]);
+const tasks: Ref<Array<Task>> = ref([]);
+
+const generateRandomId = (): number => {
+    const base36String = Math.random().toString(36).substring(2, 9);
+    return parseInt(base36String.replace('.', ''), 36);
+};
 
 const addTask = () => {
     if (!prop.isValidate) {
         return false;
     }
     if (prop.taskDetails.id == 0) {
-        var id = Math.random().toString(36).substring(2, 9);
-        const taskObject = {
+        var id = generateRandomId();
+        const taskObject: Task = {
             id: id,
             title: prop.taskDetails.title,
             description: prop.taskDetails.description,
@@ -70,12 +77,12 @@ const addTask = () => {
     emit('addTask');
 }
 
-const updateTask = (updateTaskId) => {
+const updateTask = (updateTaskId: number) => {
     const updateTask = tasks.value.filter(taskFilter => taskFilter.id === updateTaskId);
     emit('updateParentTask', updateTask)
 }
 
-const deleteTask = (deleteTaskId) => {
+const deleteTask = (deleteTaskId: number) => {
     tasks.value = tasks.value.filter(taskFilter => taskFilter.id !== deleteTaskId);
 }
 
