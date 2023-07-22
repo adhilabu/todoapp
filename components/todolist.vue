@@ -78,7 +78,11 @@ const addTask = () => {
 }
 
 const updateTask = (updateTaskId: number) => {
-    const updateTask = tasks.value.filter(taskFilter => taskFilter.id === updateTaskId);
+    const updateTask = tasks.value.find(taskFilter => taskFilter.id === updateTaskId);
+    if(!updateTask) {
+        console.error(`Error in finding task for id: ${updateTaskId}`)
+        return
+    }
     emit('updateParentTask', updateTask)
 }
 
