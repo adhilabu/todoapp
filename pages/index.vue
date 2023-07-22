@@ -21,14 +21,9 @@
 
 <script setup lang="ts">
 
-import { Task } from '@/types';
+import { Task, createDefaultTask } from '@/types';
 
-
-const taskDetails: Ref<Task> = ref({
-  id: 0,
-  title: '',
-  description: '',
-});
+const taskDetails: Ref<Task> = ref(createDefaultTask());
 
 const handleChildClick =  () => {
     taskDetails.value.id = 0
@@ -36,7 +31,7 @@ const handleChildClick =  () => {
     taskDetails.value.description = ''
 }
 
-const updateTaskDetails =  (task: Array<Task>) => {
+const updateTaskDetails = (task: Array<Task>) => {
     const updateTask = task[0];
     taskDetails.value.id = updateTask.id
     taskDetails.value.title = updateTask.title
@@ -44,11 +39,7 @@ const updateTaskDetails =  (task: Array<Task>) => {
 }
 
 const isValidate = computed(() => {
-    if (taskDetails.value.title == '' || taskDetails.value.description == '') {
-        return false;
-    } else {
-        return true
-    }
+    return taskDetails.value.title !== '' && taskDetails.value.description !== '';
 });
 
 </script>
