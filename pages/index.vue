@@ -21,7 +21,10 @@
 
 <script setup lang="ts">
 
-const taskDetails = ref({
+import { Task } from '@/types';
+
+
+const taskDetails: Ref<Task> = ref({
   id: 0,
   title: '',
   description: '',
@@ -33,7 +36,7 @@ const handleChildClick =  () => {
     taskDetails.value.description = ''
 }
 
-const updateTaskDetails =  (task: Array<{ id: number; title: string; description: string; }>) => {
+const updateTaskDetails =  (task: Array<Task>) => {
     const updateTask = task[0];
     taskDetails.value.id = updateTask.id
     taskDetails.value.title = updateTask.title
