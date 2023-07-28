@@ -23,7 +23,7 @@
                                     </div>
                                     <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                         <DialogTitle as="h3"
-                                            class="font-semibold leading-6 text-gray-900 pb-7 text-2xl align-bottom">
+                                            class="font-semibold leading-6 text-gray-900 pb-7 text-2xl align-bottom pt-2">
                                             Task Details</DialogTitle>
                                         <div class="flex flex-col">
                                             <div class="mt-2">
@@ -43,7 +43,8 @@
                             <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                                 <button type="button"
                                     class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                    @click="addTask" ref="cancelButtonRef">Add</button><span class="ml-2"></span>
+                                    @click="addTask" ref="cancelButtonRef">{{ modalButton }}</button><span
+                                    class="ml-2"></span>
                                 <button type="button"
                                     class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                                     @click="closeModallist" ref="cancelButtonRef">Cancel</button>
@@ -51,6 +52,9 @@
                         </DialogPanel>
                     </TransitionChild>
                 </div>
+            </div>
+            <div class="error-alert" v-show="isDataInvalid">
+                {{ errorMessage }}
             </div>
         </Dialog>
     </TransitionRoot>
@@ -66,13 +70,15 @@
                     </colgroup>
                     <thead>
                         <tr class="dark:bg-gray-700">
+                            <th class="p-3">No</th>
                             <th class="p-3">Title</th>
                             <th class="p-3">Description</th>
                             <th class="p-3">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="border-b dark:bg-gray-900 dark:border-gray-700">
-                        <tr v-for="eachtask in tasks" :key="eachtask.id">
+                        <tr v-for="(eachtask, index) in tasks" :key="eachtask.id">
+                            <td class="px-3 py-2">{{ getIndex(index) }}</td>
                             <td class="px-3 py-2">{{ eachtask.title }}</td>
                             <td class="px-3 py-2">{{ eachtask.description }}</td>
                             <td class="px-3 py-2">
@@ -90,8 +96,6 @@
                 </table>
             </div>
         </div>
-
-
     </div>
 </template>
 
@@ -107,9 +111,13 @@ const prop = defineProps<{
     open: boolean
 }>();
 
-const emit = defineEmits(['closeModal','openModal']);
+const emit = defineEmits(['closeModal', 'openModal']);
 
 const tasks: Ref<Array<Task>> = ref([]);
+const modalButton: Ref<string> = ref('Add');
+const isDataInvalid: Ref<boolean> = ref(false);
+const errorMessage:Ref<string> = ref('Enter valid details..!!');
+
 
 const generateRandomId = (): number => {
     const base36String = Math.random().toString(36).substring(2, 9);
@@ -118,10 +126,17 @@ const generateRandomId = (): number => {
 
 const closeModallist = () => {
     emit('closeModal');
+    setTimeout(() => {
+        setDefaultValues();
+    }, 200);
 }
 const addTask = () => {
     if (!isValidate.value) {
-        return false;
+        isDataInvalid.value = true;
+        setTimeout(() => {
+            isDataInvalid.value = false;
+        }, 1000);
+        return;
     }
     if (taskDetails.value.id == 0) {
         var id = generateRandomId();
@@ -146,7 +161,6 @@ const addTask = () => {
             });
         }
     }
-    setDefaultValues();
     closeModallist();
 }
 
@@ -157,6 +171,7 @@ const updateTask = (updateTaskId: number) => {
         return
     }
     updateTaskDetails(updateTask);
+    modalButton.value = 'Update'
     emit('openModal');
 }
 
@@ -176,6 +191,7 @@ const setDefaultValues = () => {
     taskDetails.value.id = 0
     taskDetails.value.title = ''
     taskDetails.value.description = ''
+    modalButton.value = 'Add'
 }
 
 const updateTaskDetails = (updateTask: Task) => {
@@ -184,7 +200,9 @@ const updateTaskDetails = (updateTask: Task) => {
     taskDetails.value.description = updateTask.description
 }
 
-
+const getIndex = (index: number) => {
+    return index + 1
+}
 </script>
 
 <style lang="scss" scoped></style>

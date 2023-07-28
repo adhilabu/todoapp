@@ -11,4 +11,8 @@
   .btn-primary {
     @apply py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
   }
+
+  .error-alert {
+    @apply fixed bottom-20 left-1/2 -translate-x-1/2 p-2 bg-red-500 bg-opacity-50 text-white rounded-lg shadow-md;
+  }
 }
