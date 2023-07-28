@@ -1,22 +1,14 @@
 <template>
-    <h1 class="font-bold pb-6 text-5xl pt-6"> TO DO LIST</h1>
-    <div v-show="!isValidate" clas>
-        <h3 class="text-lg text-red-600 font-thin italic">type valid task details.............</h3>
-    </div><br>
-    <div>
-        <div class="flex flex-col">
-            <div>
-                <label>Task title : </label>
-                <input type="text" id="title" v-model="taskDetails.title" class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-            </div><br>
-            <div>
-                <label>Task description : </label>
-                <input type="text" id="description" v-model="taskDetails.description" class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
-            </div><br>
+    <div class="flex flex-col items-center justify-center h-screen">
+        <div class="pt-1">
+            <button type="button"
+                class="inline-flex rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:w-auto bg-green-600"
+                @click="open = true">Add Task</button>
+        </div>
+        <div class="w-3/4">
+            <Todolist :open="open" @closeModal="closeModal" @openModal="openModal"></Todolist>
         </div>
     </div>
-
-    <Todolist :isValidate="isValidate" :taskDetails="taskDetails" @addTask="handleChildClick" @updateParentTask="updateTaskDetails"></Todolist>
 </template>
 
 <script setup lang="ts">
@@ -25,22 +17,15 @@ import { Task, createDefaultTask } from '@/types';
 
 const taskDetails: Ref<Task> = ref(createDefaultTask());
 
-const handleChildClick =  () => {
-    taskDetails.value.id = 0
-    taskDetails.value.title = ''
-    taskDetails.value.description = ''
+const open: Ref<boolean> = ref(false);
+
+const closeModal = () => {
+    open.value = false;
 }
 
-const updateTaskDetails = (task: Array<Task>) => {
-    const updateTask = task[0];
-    taskDetails.value.id = updateTask.id
-    taskDetails.value.title = updateTask.title
-    taskDetails.value.description = updateTask.description
+const openModal = () => {
+    open.value = true;
 }
-
-const isValidate = computed(() => {
-    return taskDetails.value.title !== '' && taskDetails.value.description !== '';
-});
 
 </script>
 
